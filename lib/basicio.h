@@ -15,19 +15,26 @@
 #define LOW 0
 #define HIGH 1
 
-typedef struct
-{
-    volatile uint8_t *pDdr;
-    volatile uint8_t *pPort;
+#define DEFAULT_OUTPUT                             \
+    {                                              \
+        .pDdr = 0, .pPort = 0, .pin = 0, .type = 0 \
+    }
+#define DEFAULT_INPUT                              \
+    {                                              \
+        .pDdr = 0, .pPort = 0, .pin = 0, .type = 0 \
+    }
+
+typedef struct {
+    volatile uint8_t* pDdr;
+    volatile uint8_t* pPort;
     uint8_t pin;
     uint8_t type;
 } Output;
 
-typedef struct
-{
-    volatile uint8_t *pDdr;
-    volatile uint8_t *pPin;
-    volatile uint8_t *pPort;
+typedef struct {
+    volatile uint8_t* pDdr;
+    volatile uint8_t* pPin;
+    volatile uint8_t* pPort;
     uint8_t pin;
     uint8_t type;
 } Input;

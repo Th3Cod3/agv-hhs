@@ -2,14 +2,19 @@
 #define DCMOTOR_H
 
 #include <inttypes.h>
+
 #include "basicio.h"
 
 #define DCMOTOR_STOP 0
 #define DCMOTOR_FORWARD 1
 #define DCMOTOR_BACKWARD 2
 
-typedef struct
-{
+#define DEFAULT_DCMOTOR                                                        \
+    {                                                                          \
+        .pinA = DEFAULT_OUTPUT, .pinB = DEFAULT_OUTPUT, .limit = DEFAULT_INPUT \
+    }
+
+typedef struct {
     Output pinA;
     Output pinB;
     Input limit;

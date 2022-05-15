@@ -1,15 +1,14 @@
-#include <avr/io.h>
-#include "basicio.h"
 #include "dcmotor.h"
+#include "basicio.h"
+#include <avr/io.h>
 
 void dcmotor_instruction(DcMotor motor, char instruction)
 {
-    if (dcmotor_end_limit(motor) && instruction != DCMOTOR_STOP){
+    if (motor.limit.pDdr != 0 && dcmotor_end_limit(motor) && instruction != DCMOTOR_STOP) {
         return dcmotor_instruction(motor, DCMOTOR_STOP);
     }
 
-    switch (instruction)
-    {
+    switch (instruction) {
     case DCMOTOR_FORWARD:
         basic_outputMode(motor.pinA, HIGH);
         basic_outputMode(motor.pinB, LOW);

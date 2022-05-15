@@ -12,10 +12,10 @@
 #define DEBUG_PORT PORTB
 #define DEBUG_PIN PB1 // pin TX/D0
 #endif // DEBUG
-#define DEBUG_SIGNAL(delay)      \
-    DEBUG_DDR |= _BV(DEBUG_PIN); \
-    DEBUG_PORT ^= _BV(DEBUG_PIN);     \
-    _delay_us((int)(delay));     \
+#define DEBUG_SIGNAL(delay)       \
+    DEBUG_DDR |= _BV(DEBUG_PIN);  \
+    DEBUG_PORT ^= _BV(DEBUG_PIN); \
+    _delay_us((int)(delay));      \
     DEBUG_PORT ^= _BV(DEBUG_PIN);
 #else
 #define DEBUG_SIGNAL(delay)
