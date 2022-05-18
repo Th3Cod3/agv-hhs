@@ -3,7 +3,7 @@
 
 #ifdef DEBUG_EN
 #include <util/delay.h>
-#ifdef defined(__AVR_ATmega2560__)
+#ifdef __AVR_ATmega2560__
 #define DEBUG_DDR DDRB
 #define DEBUG_PORT PORTB
 #define DEBUG_PIN PB7 // pin D13

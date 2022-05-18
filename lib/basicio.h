@@ -6,6 +6,9 @@
 #define LED_TYPE_GROUND 0
 #define LED_TYPE_VCC 1
 
+#define TYPE_LOGIC_HIGH 0
+#define TYPE_LOGIC_LOW 1
+
 #define BUTTON_TYPE_PULLDOWN 0
 #define BUTTON_TYPE_PULLUP 1
 
@@ -19,9 +22,9 @@
     {                                              \
         .pDdr = 0, .pPort = 0, .pin = 0, .type = 0 \
     }
-#define DEFAULT_INPUT                              \
-    {                                              \
-        .pDdr = 0, .pPort = 0, .pin = 0, .type = 0 \
+#define DEFAULT_INPUT                                         \
+    {                                                         \
+        .pDdr = 0, .pPort = 0, .pPin = 0, .pin = 0, .type = 0 \
     }
 
 typedef struct {
