@@ -37,9 +37,23 @@ DcMotor leftMotor = {
 };
 
 Output signalLeds = {
-    .pDdr = &DDRB,
-    .pPort = &PORTB,
-    .pin = PB7, // D36
+    .pDdr = &DDRC,
+    .pPort = &PORTC,
+    .pin = PC1, // D36
+    .type = LED_TYPE_GROUND,
+};
+
+Output enableA = {
+    .pDdr = &DDRE,
+    .pPort = &PORTE,
+    .pin = PE4, // D2
+    .type = LED_TYPE_GROUND,
+};
+
+Output enableB = {
+    .pDdr = &DDRH,
+    .pPort = &PORTH,
+    .pin = PH4, // D7
     .type = LED_TYPE_GROUND,
 };
 
@@ -48,7 +62,7 @@ Input automaticButton = {
     .pPort = &PORTC,
     .pPin = &PINC,
     .pin = PC7, // D30
-    .type = BUTTON_TYPE_PULLDOWN,
+    .type = BUTTON_TYPE_PULLUP,
 };
 
 Input followButton = {
@@ -56,7 +70,7 @@ Input followButton = {
     .pPort = &PORTC,
     .pPin = &PINC,
     .pin = PC6, // D31
-    .type = BUTTON_TYPE_PULLDOWN,
+    .type = BUTTON_TYPE_PULLUP,
 };
 
 int main(void)
@@ -66,12 +80,20 @@ int main(void)
     basic_initInput(automaticButton);
     basic_initInput(followButton);
     basic_initOutput(signalLeds);
+    basic_outputMode(enableA, HIGH);
+    basic_outputMode(enableB, HIGH);
 
     while (1) {
         if (basic_readInput(automaticButton)) {
+            basic_outputMode(signalLeds, LOW);
             dcmotor_instruction(leftMotor, DCMOTOR_FORWARD);
             dcmotor_instruction(rightMotor, DCMOTOR_FORWARD);
         } else if (basic_readInput(followButton)) {
+            basic_outputMode(signalLeds, LOW);
+            dcmotor_instruction(leftMotor, DCMOTOR_BACKWARD);
+            dcmotor_instruction(rightMotor, DCMOTOR_BACKWARD);
+        } else {
+            basic_outputMode(signalLeds, HIGH);
             dcmotor_instruction(leftMotor, DCMOTOR_STOP);
             dcmotor_instruction(rightMotor, DCMOTOR_STOP);
         }

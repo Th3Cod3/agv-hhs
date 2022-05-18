@@ -16,11 +16,19 @@ void basic_outputMode(Output output, uint8_t mode)
 
 void basic_initOutput(Output output)
 {
+    if (!output.pDdr) {
+        return;
+    }
+
     *output.pDdr |= _BV(output.pin); // INPUT
 }
 
 void basic_initInput(Input input)
 {
+    if (!input.pDdr) {
+        return;
+    }
+
     *input.pDdr &= ~_BV(input.pin); // INPUT
 
     if (input.type == BUTTON_TYPE_PULLUP) {
