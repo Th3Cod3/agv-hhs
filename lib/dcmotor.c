@@ -4,7 +4,7 @@
 
 void dcmotor_instruction(dc_motor_t motor, char instruction)
 {
-    if (motor.limit.pDdr != 0 && dcmotor_end_limit(motor) && instruction != DCMOTOR_STOP) {
+    if (motor.limit.port != 0 && dcmotor_end_limit(motor) && instruction != DCMOTOR_STOP) {
         return dcmotor_instruction(motor, DCMOTOR_STOP);
     }
 

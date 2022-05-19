@@ -1,48 +1,75 @@
 #include "basicio.h"
-#include <avr/io.h>
+
+volatile const uint8_t* ports[][3] = {
+    { &DDRA, &PORTA, &PINA },
+    { &DDRB, &PORTB, &PINB },
+    { &DDRC, &PORTC, &PINC },
+    { &DDRD, &PORTD, &PIND },
+    { &DDRE, &PORTE, &PINE },
+    { &DDRF, &PORTF, &PINF },
+    { &DDRG, &PORTG, &PING },
+    { &DDRH, &PORTH, &PINH },
+    { &DDRJ, &PORTJ, &PINJ },
+    { &DDRK, &PORTK, &PINK },
+    { &DDRL, &PORTL, &PINL },
+};
 
 void basic_outputMode(output_t output, uint8_t mode)
 {
+    uint8_t* pPort = (basic_portRegister(output.port, BASIC_PORT));
+
     if (mode == LED_HIGH && output.type == LED_TYPE_GROUND) {
-        *output.pPort |= _BV(output.pin);
+        *pPort |= _BV(output.pin);
     } else if (mode == LED_HIGH && output.type == LED_TYPE_VCC) {
-        *output.pPort &= ~_BV(output.pin);
+        *pPort &= ~_BV(output.pin);
     } else if (mode == LED_LOW && output.type == LED_TYPE_GROUND) {
-        *output.pPort &= ~_BV(output.pin);
+        *pPort &= ~_BV(output.pin);
     } else if (mode == LED_LOW && output.type == LED_TYPE_VCC) {
-        *output.pPort |= _BV(output.pin);
+        *pPort |= _BV(output.pin);
     }
 }
 
 void basic_initOutput(output_t output)
 {
-    if (!output.pDdr) {
+    if (!output.port) {
         return;
     }
 
-    *output.pDdr |= _BV(output.pin); // INPUT
+    uint8_t* pDdr = (basic_portRegister(output.port, BASIC_DDR));
+
+    *pDdr |= _BV(output.pin); // INPUT
 }
 
 void basic_initInput(input_t input)
 {
-    if (!input.pDdr) {
+    if (!input.port) {
         return;
     }
 
-    *input.pDdr &= ~_BV(input.pin); // INPUT
+    uint8_t* pDdr = (basic_portRegister(input.port, BASIC_DDR));
+    uint8_t* pPort = (basic_portRegister(input.port, BASIC_PORT));
+
+    *pDdr &= ~_BV(input.pin); // INPUT
 
     if (input.type == BUTTON_TYPE_PULLUP) {
-        *input.pPort |= _BV(input.pin); // PULLUP
+        *pPort |= _BV(input.pin); // enable internal pullup
     } else if (input.type == BUTTON_TYPE_PULLDOWN) {
-        *input.pPort &= ~_BV(input.pin); // PULLDOWN
+        *pPort &= ~_BV(input.pin); // disable internal pullup
     }
 }
 
 uint8_t basic_readInput(input_t input)
 {
+    uint8_t* pPin = (basic_portRegister(input.port, BASIC_PIN));
+
     if (input.type == BUTTON_TYPE_PULLUP) {
-        return !(*input.pPin & _BV(input.pin));
+        return !(*pPin & _BV(input.pin));
     }
 
-    return (*input.pPin & _BV(input.pin));
+    return (*pPin & _BV(input.pin));
+}
+
+uint8_t* basic_portRegister(uint8_t portNumber, uint8_t registerType)
+{
+    return ports[portNumber][registerType];
 }

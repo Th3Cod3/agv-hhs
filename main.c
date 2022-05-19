@@ -1,19 +1,18 @@
 #include "lib/basicio.h"
 #include "lib/dcmotor.h"
+#include "lib/ultrasone.h"
 #include "lib/debug.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
 dc_motor_t rightMotor = {
     .pinA = {
-        .pDdr = &DDRE,
-        .pPort = &PORTE,
+        .port = BASIC_E,
         .pin = PE5, // D3
         .type = TYPE_LOGIC_HIGH,
     },
     .pinB = {
-        .pDdr = &DDRG,
-        .pPort = &PORTG,
+        .port = BASIC_G,
         .pin = PG5, // D4
         .type = TYPE_LOGIC_HIGH,
     },
@@ -22,14 +21,12 @@ dc_motor_t rightMotor = {
 
 dc_motor_t leftMotor = {
     .pinA = {
-        .pDdr = &DDRH,
-        .pPort = &PORTH,
+        .port = BASIC_H,
         .pin = PH3, // D6
         .type = TYPE_LOGIC_HIGH,
     },
     .pinB = {
-        .pDdr = &DDRE,
-        .pPort = &PORTE,
+        .port = BASIC_E,
         .pin = PE3, // D5
         .type = TYPE_LOGIC_HIGH,
     },
@@ -37,40 +34,46 @@ dc_motor_t leftMotor = {
 };
 
 output_t signalLeds = {
-    .pDdr = &DDRC,
-    .pPort = &PORTC,
+    .port = BASIC_C,
     .pin = PC1, // D36
     .type = LED_TYPE_GROUND,
 };
 
 output_t enableA = {
-    .pDdr = &DDRE,
-    .pPort = &PORTE,
+    .port = BASIC_E,
     .pin = PE4, // D2
     .type = LED_TYPE_GROUND,
 };
 
 output_t enableB = {
-    .pDdr = &DDRH,
-    .pPort = &PORTH,
+    .port = BASIC_H,
     .pin = PH4, // D7
     .type = LED_TYPE_GROUND,
 };
 
 input_t automaticButton = {
-    .pDdr = &DDRC,
-    .pPort = &PORTC,
-    .pPin = &PINC,
+    .port = BASIC_C,
     .pin = PC7, // D30
     .type = BUTTON_TYPE_PULLUP,
 };
 
 input_t followButton = {
-    .pDdr = &DDRC,
-    .pPort = &PORTC,
-    .pPin = &PINC,
+    .port = BASIC_C,
     .pin = PC6, // D31
     .type = BUTTON_TYPE_PULLUP,
+};
+
+ultrasone_t rightUltrasone = {
+    .echo = {
+        .port = BASIC_C,
+        .pin = PC6, // D31
+        .type = BUTTON_TYPE_PULLUP,
+    },
+    .trigger = {
+        .port = BASIC_H,
+        .pin = PH4, // D7
+        .type = LED_TYPE_GROUND,
+    }
 };
 
 int main(void)
