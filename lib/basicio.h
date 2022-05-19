@@ -32,7 +32,7 @@ typedef struct {
     volatile uint8_t* pPort;
     uint8_t pin;
     uint8_t type;
-} Output;
+} output_t;
 
 typedef struct {
     volatile uint8_t* pDdr;
@@ -40,11 +40,11 @@ typedef struct {
     volatile uint8_t* pPort;
     uint8_t pin;
     uint8_t type;
-} Input;
+} input_t;
 
-void basic_initOutput(Output output);
-void basic_initInput(Input input);
-void basic_outputMode(Output output, uint8_t mode);
-uint8_t basic_readInput(Input output);
+void basic_initOutput(output_t output);
+void basic_initInput(input_t input);
+void basic_outputMode(output_t output, uint8_t mode);
+uint8_t basic_readInput(input_t output);
 
 #endif

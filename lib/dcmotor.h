@@ -15,13 +15,13 @@
     }
 
 typedef struct {
-    Output pinA;
-    Output pinB;
-    Input limit;
-} DcMotor;
+    output_t pinA;
+    output_t pinB;
+    input_t limit;
+} dc_motor_t;
 
-void dcmotor_init(DcMotor motor);
-void dcmotor_instruction(DcMotor motor, char instruction);
-uint8_t dcmotor_end_limit(DcMotor motor);
+void dcmotor_init(dc_motor_t motor);
+void dcmotor_instruction(dc_motor_t motor, char instruction);
+uint8_t dcmotor_end_limit(dc_motor_t motor);
 
 #endif

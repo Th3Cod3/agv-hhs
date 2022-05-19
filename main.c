@@ -4,7 +4,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-DcMotor rightMotor = {
+dc_motor_t rightMotor = {
     .pinA = {
         .pDdr = &DDRE,
         .pPort = &PORTE,
@@ -20,7 +20,7 @@ DcMotor rightMotor = {
     .limit = DEFAULT_INPUT,
 };
 
-DcMotor leftMotor = {
+dc_motor_t leftMotor = {
     .pinA = {
         .pDdr = &DDRH,
         .pPort = &PORTH,
@@ -36,28 +36,28 @@ DcMotor leftMotor = {
     .limit = DEFAULT_INPUT,
 };
 
-Output signalLeds = {
+output_t signalLeds = {
     .pDdr = &DDRC,
     .pPort = &PORTC,
     .pin = PC1, // D36
     .type = LED_TYPE_GROUND,
 };
 
-Output enableA = {
+output_t enableA = {
     .pDdr = &DDRE,
     .pPort = &PORTE,
     .pin = PE4, // D2
     .type = LED_TYPE_GROUND,
 };
 
-Output enableB = {
+output_t enableB = {
     .pDdr = &DDRH,
     .pPort = &PORTH,
     .pin = PH4, // D7
     .type = LED_TYPE_GROUND,
 };
 
-Input automaticButton = {
+input_t automaticButton = {
     .pDdr = &DDRC,
     .pPort = &PORTC,
     .pPin = &PINC,
@@ -65,7 +65,7 @@ Input automaticButton = {
     .type = BUTTON_TYPE_PULLUP,
 };
 
-Input followButton = {
+input_t followButton = {
     .pDdr = &DDRC,
     .pPort = &PORTC,
     .pPin = &PINC,

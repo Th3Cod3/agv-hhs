@@ -1,7 +1,7 @@
 #include "basicio.h"
 #include <avr/io.h>
 
-void basic_outputMode(Output output, uint8_t mode)
+void basic_outputMode(output_t output, uint8_t mode)
 {
     if (mode == LED_HIGH && output.type == LED_TYPE_GROUND) {
         *output.pPort |= _BV(output.pin);
@@ -14,7 +14,7 @@ void basic_outputMode(Output output, uint8_t mode)
     }
 }
 
-void basic_initOutput(Output output)
+void basic_initOutput(output_t output)
 {
     if (!output.pDdr) {
         return;
@@ -23,7 +23,7 @@ void basic_initOutput(Output output)
     *output.pDdr |= _BV(output.pin); // INPUT
 }
 
-void basic_initInput(Input input)
+void basic_initInput(input_t input)
 {
     if (!input.pDdr) {
         return;
@@ -38,7 +38,7 @@ void basic_initInput(Input input)
     }
 }
 
-uint8_t basic_readInput(Input input)
+uint8_t basic_readInput(input_t input)
 {
     if (input.type == BUTTON_TYPE_PULLUP) {
         return !(*input.pPin & _BV(input.pin));

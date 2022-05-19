@@ -2,7 +2,7 @@
 #include "basicio.h"
 #include <avr/io.h>
 
-void dcmotor_instruction(DcMotor motor, char instruction)
+void dcmotor_instruction(dc_motor_t motor, char instruction)
 {
     if (motor.limit.pDdr != 0 && dcmotor_end_limit(motor) && instruction != DCMOTOR_STOP) {
         return dcmotor_instruction(motor, DCMOTOR_STOP);
@@ -29,7 +29,7 @@ void dcmotor_instruction(DcMotor motor, char instruction)
 /*
  * init a motor
  */
-void dcmotor_init(DcMotor motor)
+void dcmotor_init(dc_motor_t motor)
 {
     basic_initInput(motor.limit);
     basic_initOutput(motor.pinA);
@@ -37,7 +37,7 @@ void dcmotor_init(DcMotor motor)
     dcmotor_instruction(motor, DCMOTOR_STOP);
 }
 
-uint8_t dcmotor_end_limit(DcMotor motor)
+uint8_t dcmotor_end_limit(dc_motor_t motor)
 {
     return basic_readInput(motor.limit);
 }
