@@ -1,6 +1,6 @@
 #include "lib/basicio.h"
 #include "lib/dcmotor.h"
-#include "lib/ultrasone.h"
+#include "lib/ultrasoon.h"
 #include "lib/debug.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -63,7 +63,7 @@ input_t followButton = {
     .type = BUTTON_TYPE_PULLUP,
 };
 
-ultrasone_t rightUltrasone = {
+ultrasoon_t rightUltrasoon = {
     .echo = {
         .port = BASIC_C,
         .pin = PC6, // D31
