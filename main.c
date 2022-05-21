@@ -5,84 +5,23 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-dc_motor_t rightMotor = {
-    .pinA = {
-        .port = BASIC_E,
-        .pin = PE5, // D3
-        .type = TYPE_LOGIC_HIGH,
-    },
-    .pinB = {
-        .port = BASIC_G,
-        .pin = PG5, // D4
-        .type = TYPE_LOGIC_HIGH,
-    },
-    .limit = DEFAULT_INPUT,
-};
-
-dc_motor_t leftMotor = {
-    .pinA = {
-        .port = BASIC_H,
-        .pin = PH3, // D6
-        .type = TYPE_LOGIC_HIGH,
-    },
-    .pinB = {
-        .port = BASIC_E,
-        .pin = PE3, // D5
-        .type = TYPE_LOGIC_HIGH,
-    },
-    .limit = DEFAULT_INPUT,
-};
-
-output_t signalLeds = {
-    .port = BASIC_C,
-    .pin = PC1, // D36
-    .type = LED_TYPE_GROUND,
-};
-
-output_t enableA = {
-    .port = BASIC_E,
-    .pin = PE4, // D2
-    .type = LED_TYPE_GROUND,
-};
-
-output_t enableB = {
-    .port = BASIC_H,
-    .pin = PH4, // D7
-    .type = LED_TYPE_GROUND,
-};
-
-input_t automaticButton = {
-    .port = BASIC_C,
-    .pin = PC7, // D30
-    .type = BUTTON_TYPE_PULLUP,
-};
-
-input_t followButton = {
-    .port = BASIC_C,
-    .pin = PC6, // D31
-    .type = BUTTON_TYPE_PULLUP,
-};
-
-ultrasoon_t rightUltrasoon = {
-    .echo = {
-        .port = BASIC_C,
-        .pin = PC6, // D31
-        .type = BUTTON_TYPE_PULLUP,
-    },
-    .trigger = {
-        .port = BASIC_H,
-        .pin = PH4, // D7
-        .type = LED_TYPE_GROUND,
-    }
-};
+extern dc_motor_t rightMotor;
+extern dc_motor_t leftMotor;
+extern output_t signalLeds;
+extern output_t enableA;
+extern output_t enableB;
+extern input_t automaticButton;
+extern input_t followButton;
+extern input_t detectLeft;
+extern input_t detectRight;
+extern input_t detectFrontLeft;
+extern input_t detectFrontRight;
+extern ultrasoon_t leftUltrasoon;
+extern ultrasoon_t rightUltrasoon;
+extern ultrasoon_t frontUltrasoon;
 
 int main(void)
 {
-    dcmotor_init(rightMotor);
-    dcmotor_init(leftMotor);
-    basic_initInput(automaticButton);
-    basic_initInput(followButton);
-    basic_initOutput(signalLeds);
     basic_outputMode(enableA, HIGH);
     basic_outputMode(enableB, HIGH);
 

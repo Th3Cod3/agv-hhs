@@ -14,7 +14,7 @@
         .pinA = DEFAULT_OUTPUT, .pinB = DEFAULT_OUTPUT, .limit = DEFAULT_INPUT \
     }
 
-typedef struct {
+typedef struct dc_motor_t {
     output_t pinA;
     output_t pinB;
     input_t limit;

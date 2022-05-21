@@ -41,13 +41,13 @@
     }
 #define DEFAULT_INPUT DEFAULT_OUTPUT
 
-typedef struct {
+typedef struct output_t {
     uint8_t port;
     uint8_t pin;
     uint8_t type;
 } output_t;
 
-typedef struct {
+typedef struct input_t {
     uint8_t port;
     uint8_t pin;
     uint8_t type;
