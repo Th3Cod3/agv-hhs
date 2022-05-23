@@ -6,19 +6,23 @@
 #ifdef __AVR_ATmega2560__
 #define DEBUG_DDR DDRB
 #define DEBUG_PORT PORTB
-#define DEBUG_PIN PB7 // pin D13
+#define DEBUG_PIN PB6 // pin D12
 #elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
 #define DEBUG_DDR DDRB
 #define DEBUG_PORT PORTB
 #define DEBUG_PIN PB1 // pin TX/D0
-#endif // DEBUG
-#define DEBUG_SIGNAL(delay)       \
-    DEBUG_DDR |= _BV(DEBUG_PIN);  \
+#endif // Arduino Uno/Nano
+#define INIT_DEBUG_SIGNAL DEBUG_DDR |= _BV(DEBUG_PIN);
+#define DEBUG_DELAY(delay)        \
     DEBUG_PORT ^= _BV(DEBUG_PIN); \
-    _delay_us((int)(delay));      \
+    _delay_us((double)(delay));      \
+    DEBUG_PORT ^= _BV(DEBUG_PIN);
+#define DEBUG_SIGNAL              \
+    DEBUG_PORT ^= _BV(DEBUG_PIN); \
     DEBUG_PORT ^= _BV(DEBUG_PIN);
 #else
-#define DEBUG_SIGNAL(delay)
+#define DEBUG_SIGNAL
+#define DEBUG_DELAY(delay)
 #endif
 
 #endif // DEBUG
