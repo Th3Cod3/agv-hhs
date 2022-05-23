@@ -19,13 +19,19 @@ extern input_t detectFrontRight;
 extern ultrasoon_t leftUltrasoon;
 extern ultrasoon_t rightUltrasoon;
 extern ultrasoon_t frontUltrasoon;
+void initGlobal();
 
 int main(void)
 {
+    initGlobal();
     basic_outputMode(enableA, HIGH);
     basic_outputMode(enableB, HIGH);
 
     while (1) {
+        DEBUG_SIGNAL
+        ultrasoon_setDistance(&frontUltrasoon);
+        DEBUG_SIGNAL
+        continue;
         if (basic_readInput(automaticButton)) {
             basic_outputMode(signalLeds, LOW);
             dcmotor_instruction(leftMotor, DCMOTOR_FORWARD);

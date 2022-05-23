@@ -1,6 +1,7 @@
-
 #include "basicio.h"
 #include "dcmotor.h"
+#include "debug.h"
+#include "millis.h"
 #include "ultrasoon.h"
 #include <avr/io.h>
 
@@ -41,13 +42,13 @@ output_t signalLeds = {
 output_t enableA = {
     .port = BASIC_E,
     .pin = PE4, // D2
-    .type = LED_TYPE_GROUND,
+    .type = TYPE_LOGIC_HIGH,
 };
 
 output_t enableB = {
     .port = BASIC_H,
     .pin = PH4, // D7
-    .type = LED_TYPE_GROUND,
+    .type = TYPE_LOGIC_HIGH,
 };
 
 input_t automaticButton = {
@@ -65,37 +66,37 @@ input_t followButton = {
 input_t detectLeft = {
     .port = BASIC_F,
     .pin = PF1, // A1
-    .type = BUTTON_TYPE_DISABLE,
+    .type = TYPE_LOGIC_LOW,
 };
 
 input_t detectRight = {
     .port = BASIC_F,
     .pin = PF2, // A2
-    .type = BUTTON_TYPE_DISABLE,
+    .type = TYPE_LOGIC_LOW,
 };
 
 input_t detectFrontLeft = {
     .port = BASIC_F,
     .pin = PF5, // A5
-    .type = BUTTON_TYPE_DISABLE,
+    .type = TYPE_LOGIC_LOW,
 };
 
 input_t detectFrontRight = {
     .port = BASIC_F,
     .pin = PF6, // A6
-    .type = BUTTON_TYPE_DISABLE,
+    .type = TYPE_LOGIC_LOW,
 };
 
 ultrasoon_t leftUltrasoon = {
     .echo = {
         .port = BASIC_A,
         .pin = PA0, // D22
-        .type = BUTTON_TYPE_PULLUP,
+        .type = TYPE_LOGIC_HIGH,
     },
     .trigger = {
         .port = BASIC_A,
         .pin = PA1, // D23
-        .type = TYPE_LOGIC_HIGH,
+        .type = TYPE_LOGIC_LOW,
     }
 };
 
@@ -103,12 +104,12 @@ ultrasoon_t rightUltrasoon = {
     .echo = {
         .port = BASIC_A,
         .pin = PA2, // D24
-        .type = BUTTON_TYPE_PULLUP,
+        .type = TYPE_LOGIC_HIGH,
     },
     .trigger = {
         .port = BASIC_A,
         .pin = PA3, // D25
-        .type = TYPE_LOGIC_HIGH,
+        .type = TYPE_LOGIC_LOW,
     }
 };
 
@@ -116,17 +117,20 @@ ultrasoon_t frontUltrasoon = {
     .echo = {
         .port = BASIC_A,
         .pin = PA4, // D26
-        .type = BUTTON_TYPE_PULLUP,
+        .type = TYPE_LOGIC_HIGH,
     },
     .trigger = {
         .port = BASIC_A,
         .pin = PA5, // D27
-        .type = TYPE_LOGIC_HIGH,
+        .type = TYPE_LOGIC_LOW,
     }
 };
 
-void initBasicIO()
+void initGlobal()
 {
+    INIT_DEBUG_SIGNAL
+    initMillis();
+
     // init output
     basic_initOutput(signalLeds);
     basic_initOutput(enableA);
