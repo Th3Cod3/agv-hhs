@@ -4,20 +4,20 @@
 #include <avr/io.h>
 #include <inttypes.h>
 
-#define LED_TYPE_GROUND 0
-#define LED_TYPE_VCC 1
-
 #define TYPE_LOGIC_HIGH 0
 #define TYPE_LOGIC_LOW 1
 
-#define BUTTON_TYPE_PULLDOWN 0
-#define BUTTON_TYPE_PULLUP 1
+#define LED_TYPE_GROUND TYPE_LOGIC_HIGH
+#define LED_TYPE_VCC TYPE_LOGIC_LOW
 
-#define LED_LOW 0
-#define LED_HIGH 1
+#define BUTTON_TYPE_DISABLE TYPE_LOGIC_HIGH
+#define BUTTON_TYPE_PULLUP TYPE_LOGIC_LOW
 
 #define LOW 0
 #define HIGH 1
+
+#define LED_LOW LOW
+#define LED_HIGH HIGH
 
 #define BASIC_DDR 0
 #define BASIC_PORT 1

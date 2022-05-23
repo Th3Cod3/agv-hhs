@@ -53,7 +53,7 @@ void basic_initInput(input_t input)
 
     if (input.type == BUTTON_TYPE_PULLUP) {
         *pPort |= _BV(input.pin); // enable internal pullup
-    } else if (input.type == BUTTON_TYPE_PULLDOWN) {
+    } else if (input.type == BUTTON_TYPE_DISABLE) {
         *pPort &= ~_BV(input.pin); // disable internal pullup
     }
 }

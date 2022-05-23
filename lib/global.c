@@ -65,25 +65,25 @@ input_t followButton = {
 input_t detectLeft = {
     .port = BASIC_F,
     .pin = PF1, // A1
-    .type = BUTTON_TYPE_PULLDOWN,
+    .type = BUTTON_TYPE_DISABLE,
 };
 
 input_t detectRight = {
     .port = BASIC_F,
     .pin = PF2, // A2
-    .type = BUTTON_TYPE_PULLDOWN,
+    .type = BUTTON_TYPE_DISABLE,
 };
 
 input_t detectFrontLeft = {
     .port = BASIC_F,
     .pin = PF5, // A5
-    .type = BUTTON_TYPE_PULLDOWN,
+    .type = BUTTON_TYPE_DISABLE,
 };
 
 input_t detectFrontRight = {
     .port = BASIC_F,
     .pin = PF6, // A6
-    .type = BUTTON_TYPE_PULLDOWN,
+    .type = BUTTON_TYPE_DISABLE,
 };
 
 ultrasoon_t leftUltrasoon = {
@@ -125,7 +125,8 @@ ultrasoon_t frontUltrasoon = {
     }
 };
 
-void initBasicIO() {
+void initBasicIO()
+{
     // init output
     basic_initOutput(signalLeds);
     basic_initOutput(enableA);

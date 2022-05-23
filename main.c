@@ -1,7 +1,7 @@
 #include "lib/basicio.h"
 #include "lib/dcmotor.h"
-#include "lib/ultrasoon.h"
 #include "lib/debug.h"
+#include "lib/ultrasoon.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
