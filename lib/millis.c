@@ -5,26 +5,19 @@
   https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/wiring.c
   See the GNU Lesser General Public License for more details.
 */
+#include "millis.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-#define clockCyclesPerMicrosecond() (F_CPU / 1000000L)
-#define clockCyclesToMicroseconds(a) ((a) / clockCyclesPerMicrosecond())
-#define microsecondsToClockCycles(a) ((a)*clockCyclesPerMicrosecond())
-#define MICROSECONDS_PER_TIMER0_OVERFLOW (clockCyclesToMicroseconds(64 * 256))
-#define MILLIS_INC (MICROSECONDS_PER_TIMER0_OVERFLOW / 1000)
-#define FRACT_INC ((MICROSECONDS_PER_TIMER0_OVERFLOW % 1000) >> 3)
-#define FRACT_MAX (1000 >> 3)
-
-volatile unsigned long timer0_overflow_count = 0;
-volatile unsigned long timer0_millis = 0;
+volatile uint32_t timer0_overflow_count = 0;
+volatile uint32_t timer0_millis = 0;
 static unsigned char timer0_fract = 0;
 
 ISR(TIMER0_OVF_vect)
 {
     // copy these to local variables so they can be stored in registers
     // (volatile variables must be read from memory on every access)
-    unsigned long m = timer0_millis;
+    uint32_t m = timer0_millis;
     unsigned char f = timer0_fract;
 
     m += MILLIS_INC;
@@ -39,9 +32,9 @@ ISR(TIMER0_OVF_vect)
     timer0_overflow_count++;
 }
 
-unsigned long millis()
+uint32_t millis()
 {
-    unsigned long m;
+    uint32_t m;
     uint8_t oldSREG = SREG;
 
     // disable interrupts while we read timer0_millis or we might get an
@@ -53,9 +46,15 @@ unsigned long millis()
     return m;
 }
 
-unsigned long micros()
+/*
+ * micros with uint64_t takes 66.6us (1067 cycles)
+ * max time = 2^64us = 584542 years
+ * micros with uint32_t takes 3.5us (58 cycles)
+ * max time = 2^32us = 1.19hours
+ */
+uint32_t micros()
 {
-    unsigned long m;
+    uint32_t m;
     uint8_t oldSREG = SREG, t;
 
     cli();
@@ -68,4 +67,10 @@ unsigned long micros()
     SREG = oldSREG;
 
     return ((m << 8) + t) * (64 / clockCyclesPerMicrosecond());
+}
+
+void initMillis()
+{
+    TCCR0B |= _BV(CS01) | _BV(CS00);
+    TIMSK0 |= _BV(TOIE0);
 }
