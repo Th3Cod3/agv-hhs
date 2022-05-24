@@ -23,17 +23,18 @@
 #define BASIC_PORT 1
 #define BASIC_PIN 2
 
-#define BASIC_A 0
-#define BASIC_B 1
-#define BASIC_C 2
-#define BASIC_D 3
-#define BASIC_E 4
-#define BASIC_F 5
-#define BASIC_G 6
-#define BASIC_H 7
-#define BASIC_J 8
-#define BASIC_K 9
-#define BASIC_L 10
+#define BASIC_NULL 0
+#define BASIC_A 1
+#define BASIC_B 2
+#define BASIC_C 3
+#define BASIC_D 4
+#define BASIC_E 5
+#define BASIC_F 6
+#define BASIC_G 7
+#define BASIC_H 8
+#define BASIC_J 9
+#define BASIC_K 10
+#define BASIC_L 11
 
 #define DEFAULT_OUTPUT                 \
     {                                  \

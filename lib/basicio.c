@@ -1,6 +1,7 @@
 #include "basicio.h"
 
 volatile const uint8_t* ports[][3] = {
+    { 0, 0, 0 },
     { &DDRA, &PORTA, &PINA },
     { &DDRB, &PORTB, &PINB },
     { &DDRC, &PORTC, &PINC },
