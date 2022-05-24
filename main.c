@@ -30,7 +30,6 @@ int main(void)
     while (1) {
         DEBUG_SIGNAL
         ultrasoon_setDistance(&frontUltrasoon);
-        DEBUG_SIGNAL
         continue;
         if (basic_readInput(automaticButton)) {
             basic_outputMode(signalLeds, LOW);
