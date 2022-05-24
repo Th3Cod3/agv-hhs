@@ -25,7 +25,7 @@ int main(void)
 {
     initGlobal();
     basic_outputMode(enableA, HIGH);
-    basic_outputMode(enableB, HIGH);
+    //basic_outputMode(enableB, HIGH);
 
     while (1) {
         DEBUG_SIGNAL
