@@ -45,8 +45,8 @@ void ultrasoon_setDistance(ultrasoon_t* ultrasoon)
     }
 
     ultrasoon->start_time = micros();
-    timeout = ultrasoon->start_time + ULTRASOON_TIMEOUT;
     DEBUG_SIGNAL
+    timeout = ultrasoon->start_time + ULTRASOON_TIMEOUT;
     while ((*echo & _BV(ultrasoon->echo.pin))) {
         if (timeout < micros()) {
             DEBUG_DELAY(500)
@@ -58,5 +58,5 @@ void ultrasoon_setDistance(ultrasoon_t* ultrasoon)
     ultrasoon->end_time = micros();
     DEBUG_SIGNAL
 
-    ultrasoon->distance = ((ultrasoon->end_time - ultrasoon->start_time) * SPEED_OF_SOUND) / 2;
+    ultrasoon->distance = (ultrasoon->end_time - ultrasoon->start_time) * SPEED_OF_SOUND / 2;
 }
