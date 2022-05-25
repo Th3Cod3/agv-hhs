@@ -1,4 +1,5 @@
 #include "ultrasoon.h"
+#include "debug.h"
 #include "millis.h"
 #include <avr/io.h>
 #include <util/delay.h>
@@ -31,10 +32,28 @@ void ultrasoon_setDistance(ultrasoon_t* ultrasoon)
     *trigger ^= _BV(ultrasoon->trigger.pin);
     _delay_us(10);
     *trigger ^= _BV(ultrasoon->trigger.pin);
+
     ultrasoon->start_time = micros();
-    while (*echo & _BV(ultrasoon->echo.pin) && ultrasoon->start_time > micros() - ULTRASOON_TIMEOUT)
-        ;
+    while (!(*echo & _BV(ultrasoon->echo.pin))) {
+        DEBUG_SIGNAL
+        if (ultrasoon->start_time + ULTRASOON_TIMEOUT < micros()) {
+            DEBUG_DELAY(500)
+            return;
+        }
+    }
+
+    ultrasoon->start_time = micros();
+    while ((*echo & _BV(ultrasoon->echo.pin))) {
+        DEBUG_SIGNAL
+        if (ultrasoon->start_time + ULTRASOON_TIMEOUT < micros()) {
+            DEBUG_DELAY(500)
+            return;
+        }
+    }
+
+    DEBUG_DELAY(10)
     ultrasoon->end_time = micros();
+    DEBUG_DELAY(10)
 
     ultrasoon->distance = (ultrasoon->end_time - ultrasoon->start_time) * SPEED_OF_SOUND / 2;
 }

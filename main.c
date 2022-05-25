@@ -30,7 +30,10 @@ int main(void)
     while (1) {
         DEBUG_SIGNAL
         ultrasoon_setDistance(&frontUltrasoon);
+        DEBUG_SIGNAL
+        _delay_ms(1);
         DEBUG_DELAY(frontUltrasoon.distance)
+        _delay_ms(2);
         continue;
 
         if (basic_readInput(automaticButton) && frontUltrasoon.distance > 10) {
