@@ -9,7 +9,7 @@ extern dc_motor_t rightMotor;
 extern dc_motor_t leftMotor;
 extern output_t signalLeds;
 extern output_t enableA;
-extern output_t enableC;
+extern output_t enableB;
 extern input_t automaticButton;
 extern input_t followButton;
 extern input_t detectLeft;
@@ -30,12 +30,14 @@ int main(void)
     while (1) {
         DEBUG_SIGNAL
         ultrasoon_setDistance(&frontUltrasoon);
+        DEBUG_DELAY(frontUltrasoon.distance)
         continue;
-        if (basic_readInput(automaticButton)) {
+
+        if (basic_readInput(automaticButton) && frontUltrasoon.distance > 10) {
             basic_outputMode(signalLeds, LOW);
             dcmotor_instruction(leftMotor, DCMOTOR_FORWARD);
             dcmotor_instruction(rightMotor, DCMOTOR_FORWARD);
-        } else if (basic_readInput(followButton)) {
+        } else if (basic_readInput(followButton) && frontUltrasoon.distance > 10) {
             basic_outputMode(signalLeds, LOW);
             dcmotor_instruction(leftMotor, DCMOTOR_BACKWARD);
             dcmotor_instruction(rightMotor, DCMOTOR_BACKWARD);

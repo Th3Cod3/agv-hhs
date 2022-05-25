@@ -11,14 +11,14 @@
 
 volatile uint32_t timer0_overflow_count = 0;
 volatile uint32_t timer0_millis = 0;
-static unsigned char timer0_fract = 0;
+static uint8_t timer0_fract = 0;
 
 ISR(TIMER0_OVF_vect)
 {
     // copy these to local variables so they can be stored in registers
     // (volatile variables must be read from memory on every access)
     uint32_t m = timer0_millis;
-    unsigned char f = timer0_fract;
+    uint8_t f = timer0_fract;
 
     m += MILLIS_INC;
     f += FRACT_INC;
@@ -73,4 +73,5 @@ void initMillis()
 {
     TCCR0B |= _BV(CS01) | _BV(CS00);
     TIMSK0 |= _BV(TOIE0);
+    sei();
 }
