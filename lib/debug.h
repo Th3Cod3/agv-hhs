@@ -15,7 +15,7 @@
 #define INIT_DEBUG_SIGNAL DEBUG_DDR |= _BV(DEBUG_PIN);
 #define DEBUG_DELAY(delay)        \
     DEBUG_PORT ^= _BV(DEBUG_PIN); \
-    _delay_us((double)(delay));      \
+    _delay_us((double)(delay));   \
     DEBUG_PORT ^= _BV(DEBUG_PIN);
 #define DEBUG_SIGNAL              \
     DEBUG_PORT ^= _BV(DEBUG_PIN); \
