@@ -72,5 +72,5 @@ uint8_t basic_readInput(input_t input)
 
 uint8_t* basic_portRegister(uint8_t portNumber, uint8_t registerType)
 {
-    return ports[portNumber][registerType];
+    return (uint8_t*)ports[portNumber][registerType];
 }
