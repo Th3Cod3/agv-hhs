@@ -23,7 +23,7 @@ COMPILE         = avr-gcc -Wall -Os -mmcu=$(DEVICE) -std=gnu99
 
 .PHONY: clean upload
 
-default: compile upload
+default: compile
 
 %.asm: %.c
 	$(COMPILE) -S -c $< -o $@
@@ -34,7 +34,7 @@ default: compile upload
 compile: clean-all $(OBJS)
 	$(COMPILE) -o $(BUILD).elf $(OBJS)
 	avr-objcopy -j .text -j .data -O ihex $(BUILD).elf $(BUILD).hex
-	avr-size --format=avr --mcu=$(DEVICE) $(BUILD).elf
+	avr-size $(BUILD).elf
 
 asm: clean-all $(ASMS)
 
