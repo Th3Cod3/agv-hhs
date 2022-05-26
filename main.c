@@ -31,16 +31,12 @@ int main(void)
         DEBUG_SIGNAL
         ultrasoon_setDistance(&frontUltrasoon);
         DEBUG_SIGNAL
-        _delay_ms(1);
-        DEBUG_DELAY(frontUltrasoon.distance)
-        _delay_ms(2);
-        continue;
 
-        if (basic_readInput(automaticButton) && frontUltrasoon.distance > 10) {
+        if (basic_readInput(automaticButton) && frontUltrasoon.distance > 20) {
             basic_outputMode(signalLeds, LOW);
             dcmotor_instruction(leftMotor, DCMOTOR_FORWARD);
             dcmotor_instruction(rightMotor, DCMOTOR_FORWARD);
-        } else if (basic_readInput(followButton) && frontUltrasoon.distance > 10) {
+        } else if (basic_readInput(followButton) && frontUltrasoon.distance > 20) {
             basic_outputMode(signalLeds, LOW);
             dcmotor_instruction(leftMotor, DCMOTOR_BACKWARD);
             dcmotor_instruction(rightMotor, DCMOTOR_BACKWARD);
