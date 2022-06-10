@@ -50,7 +50,7 @@ void dcmotor_pwm_init(pwm_dc_motor_t motor)
 
 void dcmotor_pwm_instruction(pwm_dc_motor_t motor, int16_t speed)
 {
-    if (speed > 100 || speed < -100) {
+    if (speed >= 100 || speed <= -100) {
         basic_outputMode(motor.enable, HIGH);
     } else if (!speed) {
         basic_outputMode(motor.enable, LOW);
@@ -62,6 +62,11 @@ void dcmotor_pwm_instruction(pwm_dc_motor_t motor, int16_t speed)
         dcmotor_instruction(motor.motor, DCMOTOR_FORWARD);
     } else if (speed < 0) {
         dcmotor_instruction(motor.motor, DCMOTOR_BACKWARD);
+    }
+
+    speed = speed < 0 ? speed * -1 : speed;
+    if (speed != 0) {
+        *(motor.OCR) = (signed int)(speed * 255 / 100);
     }
 }
 

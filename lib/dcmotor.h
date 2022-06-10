@@ -26,6 +26,7 @@ typedef struct dc_motor_t {
 typedef struct pwm_dc_motor_t {
     dc_motor_t motor;
     output_t enable;
+    volatile int16_t* OCR;
 } pwm_dc_motor_t;
 
 void dcmotor_init(dc_motor_t motor);
