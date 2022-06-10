@@ -22,28 +22,6 @@ void initGlobal();
 int main(void)
 {
     initGlobal();
-    // OC4B = D7
-    // OC3B = D2
-
-    // Wave mode fast PWM 8bit (non-inverting)
-    TCCR3A |= _BV(WGM30) | _BV(COM3B1);
-    TCCR3B |= _BV(WGM32);
-
-    // pre-scaler 1
-    TCCR3B |= _BV(CS30);
-
-    OCR3B = 10;
-    TCNT3 = 0;
-
-    // Wave mode fast PWM 8bit (non-inverting)
-    TCCR4A |= _BV(WGM40) | _BV(COM4B1);
-    TCCR4B |= _BV(WGM42);
-
-    // pre-scaler 1
-    TCCR4B |= _BV(CS40);
-
-    OCR4B = 10;
-    TCNT4 = 0;
 
     while (1) {
         continue;
