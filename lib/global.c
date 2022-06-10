@@ -1,4 +1,5 @@
 #include "basicio.h"
+#include "PID.h"
 #include "dcmotor.h"
 #include "debug.h"
 #include "millis.h"
@@ -47,6 +48,13 @@ pwm_dc_motor_t rightMotor = {
         .type = TYPE_LOGIC_LOW,
     },
     .OCR = &OCR3B,
+};
+
+PID_t rideStraightPID = {
+    .kp = 8,
+    .ki = 0,
+    .kd = 5,
+    .setPoint = 5,
 };
 
 output_t signalLeds = {
@@ -101,20 +109,22 @@ ultrasoon_t leftUltrasoon = {
         .port = BASIC_A,
         .pin = PA1, // D23
         .type = TYPE_LOGIC_LOW,
-    }
+    },
+    .max_distance = 20
 };
 
 ultrasoon_t rightUltrasoon = {
     .echo = {
         .port = BASIC_A,
-        .pin = PA2, // D24
+        .pin = PA3, // D25
         .type = TYPE_LOGIC_HIGH,
     },
     .trigger = {
         .port = BASIC_A,
-        .pin = PA3, // D25
+        .pin = PA2, // D24
         .type = TYPE_LOGIC_LOW,
-    }
+    },
+    .max_distance = 20
 };
 
 ultrasoon_t frontUltrasoon = {
@@ -127,7 +137,8 @@ ultrasoon_t frontUltrasoon = {
         .port = BASIC_A,
         .pin = PA5, // D27
         .type = TYPE_LOGIC_LOW,
-    }
+    },
+    .max_distance = 50
 };
 
 void initFastPWM() {

@@ -1,9 +1,13 @@
+#include "lib/PID.h"
 #include "lib/basicio.h"
 #include "lib/dcmotor.h"
 #include "lib/debug.h"
+#include "lib/millis.h"
 #include "lib/ultrasoon.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
+
+#define MIN_SPEED 10
 
 extern pwm_dc_motor_t rightMotor;
 extern pwm_dc_motor_t leftMotor;
@@ -17,50 +21,91 @@ extern input_t detectFrontRight;
 extern ultrasoon_t leftUltrasoon;
 extern ultrasoon_t rightUltrasoon;
 extern ultrasoon_t frontUltrasoon;
+extern PID_t rideStraightPID;
 void initGlobal();
 
 int main(void)
 {
     initGlobal();
-    // OC4B = D7
-    // OC3B = D2
-
-    // Wave mode fast PWM 8bit (non-inverting)
-    TCCR3A |= _BV(WGM30) | _BV(COM3B1);
-    TCCR3B |= _BV(WGM32);
-
-    // pre-scaler 1
-    TCCR3B |= _BV(CS30);
-
-    OCR3B = 10;
-    TCNT3 = 0;
-
-    // Wave mode fast PWM 8bit (non-inverting)
-    TCCR4A |= _BV(WGM40) | _BV(COM4B1);
-    TCCR4B |= _BV(WGM42);
-
-    // pre-scaler 1
-    TCCR4B |= _BV(CS40);
-
-    OCR4B = 10;
-    TCNT4 = 0;
+    uint32_t lastMillis = 0;
+    uint8_t ledState = 0;
+    uint8_t speed = 0;
+    double output = 0;
 
     while (1) {
-        continue;
-        DEBUG_SIGNAL
         ultrasoon_setDistance(&frontUltrasoon);
-        DEBUG_SIGNAL
+        ultrasoon_setDistance(&leftUltrasoon);
+        ultrasoon_setDistance(&rightUltrasoon);
 
-        if (basic_readInput(automaticButton) && frontUltrasoon.distance > 20) {
-            basic_outputMode(signalLeds, LOW);
-            dcmotor_pwm_instruction(leftMotor, 100);
-            dcmotor_pwm_instruction(rightMotor, 100);
-        } else if (basic_readInput(followButton) && frontUltrasoon.distance > 20) {
-            basic_outputMode(signalLeds, LOW);
-            dcmotor_pwm_instruction(leftMotor, -100);
-            dcmotor_pwm_instruction(rightMotor, -100);
+        output = PID_computed_custom(&rideStraightPID, rightUltrasoon.distance);
+
+        if (basic_readInput(automaticButton)) {
+            if (basic_readInput(detectLeft) || basic_readInput(detectRight)) { // ToDo: time out
+                basic_outputMode(signalLeds, HIGH);
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, 0);
+                // ToDo: wait 5 seconds
+            } else if (frontUltrasoon.distance > 20) {
+                speed = 40;
+                basic_outputMode(signalLeds, LOW);
+                dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
+                dcmotor_pwm_instruction(rightMotor, speed);
+            } else if (frontUltrasoon.distance > 10) {
+                basic_outputMode(signalLeds, LOW);
+                dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
+                dcmotor_pwm_instruction(rightMotor, speed);
+            } else {
+                if (lastMillis + 100 < millis()) {
+                    ledState = !ledState;
+                    lastMillis = millis();
+                }
+                if (ledState) {
+                    basic_outputMode(signalLeds, HIGH);
+                } else {
+                    basic_outputMode(signalLeds, LOW);
+                }
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, 0);
+            }
+        } else if (basic_readInput(followButton)) {
+            uint8_t _detectFrontLeft = basic_readInput(detectFrontLeft);
+            uint8_t _detectFrontRight = basic_readInput(detectFrontRight);
+            speed = 50;
+
+            if (!_detectFrontLeft && !_detectFrontRight) {
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, 0);
+            } else if (_detectFrontLeft && !_detectFrontRight) {
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, speed);
+            } else if (!_detectFrontLeft && _detectFrontRight) {
+                dcmotor_pwm_instruction(leftMotor, speed);
+                dcmotor_pwm_instruction(rightMotor, 0);
+            } else if (_detectFrontLeft && _detectFrontRight) {
+                if (frontUltrasoon.distance > 10) {
+                    basic_outputMode(signalLeds, LOW);
+                    dcmotor_pwm_instruction(leftMotor, speed);
+                    dcmotor_pwm_instruction(rightMotor, speed);
+                } else if (frontUltrasoon.distance > 5) {
+                    speed = 30;
+                    basic_outputMode(signalLeds, LOW);
+                    dcmotor_pwm_instruction(leftMotor, speed);
+                    dcmotor_pwm_instruction(rightMotor, speed);
+                } else {
+                    if (lastMillis + 100 < millis()) {
+                        ledState = !ledState;
+                        lastMillis = millis();
+                    }
+                    if (ledState) {
+                        basic_outputMode(signalLeds, HIGH);
+                    } else {
+                        basic_outputMode(signalLeds, LOW);
+                    }
+                    dcmotor_pwm_instruction(leftMotor, 0);
+                    dcmotor_pwm_instruction(rightMotor, 0);
+                }
+            }
         } else {
-            basic_outputMode(signalLeds, HIGH);
             dcmotor_pwm_instruction(leftMotor, 0);
             dcmotor_pwm_instruction(rightMotor, 0);
         }
