@@ -67,6 +67,44 @@ int main(void)
                 dcmotor_pwm_instruction(leftMotor, 0);
                 dcmotor_pwm_instruction(rightMotor, 0);
             }
+        } else if (basic_readInput(followButton)) {
+            uint8_t _detectFrontLeft = basic_readInput(detectFrontLeft);
+            uint8_t _detectFrontRight = basic_readInput(detectFrontRight);
+            speed = 50;
+
+            if (!_detectFrontLeft && !_detectFrontRight) {
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, 0);
+            } else if (_detectFrontLeft && !_detectFrontRight) {
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, speed);
+            } else if (!_detectFrontLeft && _detectFrontRight) {
+                dcmotor_pwm_instruction(leftMotor, speed);
+                dcmotor_pwm_instruction(rightMotor, 0);
+            } else if (_detectFrontLeft && _detectFrontRight) {
+                if (frontUltrasoon.distance > 10) {
+                    basic_outputMode(signalLeds, LOW);
+                    dcmotor_pwm_instruction(leftMotor, speed);
+                    dcmotor_pwm_instruction(rightMotor, speed);
+                } else if (frontUltrasoon.distance > 5) {
+                    speed = 30;
+                    basic_outputMode(signalLeds, LOW);
+                    dcmotor_pwm_instruction(leftMotor, speed);
+                    dcmotor_pwm_instruction(rightMotor, speed);
+                } else {
+                    if (lastMillis + 100 < millis()) {
+                        ledState = !ledState;
+                        lastMillis = millis();
+                    }
+                    if (ledState) {
+                        basic_outputMode(signalLeds, HIGH);
+                    } else {
+                        basic_outputMode(signalLeds, LOW);
+                    }
+                    dcmotor_pwm_instruction(leftMotor, 0);
+                    dcmotor_pwm_instruction(rightMotor, 0);
+                }
+            }
         } else {
             dcmotor_pwm_instruction(leftMotor, 0);
             dcmotor_pwm_instruction(rightMotor, 0);
