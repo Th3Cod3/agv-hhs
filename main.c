@@ -2,6 +2,7 @@
 #include "lib/basicio.h"
 #include "lib/dcmotor.h"
 #include "lib/debug.h"
+#include "lib/millis.h"
 #include "lib/ultrasoon.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -24,6 +25,8 @@ void initGlobal();
 int main(void)
 {
     initGlobal();
+    uint32_t lastMillis = 0;
+    uint8_t ledState = 0;
     uint8_t speed = 0;
     double output = 0;
 
@@ -49,6 +52,15 @@ int main(void)
             dcmotor_pwm_instruction(leftMotor, speed - output);
             dcmotor_pwm_instruction(rightMotor, speed);
         } else {
+            if (lastMillis + 100 < millis()) {
+                ledState = !ledState;
+                lastMillis = millis();
+            }
+            if (ledState) {
+                basic_outputMode(signalLeds, HIGH);
+            } else {
+                basic_outputMode(signalLeds, LOW);
+            }
             basic_outputMode(signalLeds, HIGH);
             dcmotor_pwm_instruction(leftMotor, 0);
             dcmotor_pwm_instruction(rightMotor, 0);
