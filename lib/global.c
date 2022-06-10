@@ -1,4 +1,5 @@
 #include "basicio.h"
+#include "PID.h"
 #include "dcmotor.h"
 #include "debug.h"
 #include "millis.h"
@@ -47,6 +48,13 @@ pwm_dc_motor_t rightMotor = {
         .type = TYPE_LOGIC_LOW,
     },
     .OCR = &OCR3B,
+};
+
+PID_t rideStraightPID = {
+    .kp = 8,
+    .ki = 0,
+    .kd = 5,
+    .setPoint = 5,
 };
 
 output_t signalLeds = {
