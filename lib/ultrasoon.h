@@ -14,6 +14,7 @@ typedef struct ultrasoon_t {
     uint32_t start_time;
     uint32_t end_time;
     uint16_t distance;
+    uint16_t max_distance;
 } ultrasoon_t;
 
 void ultrasoon_init(ultrasoon_t ultrasoon);

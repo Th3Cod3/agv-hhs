@@ -26,7 +26,8 @@ void ultrasoon_setDistance(ultrasoon_t* ultrasoon)
     }
 
     uint8_t* trigger = basic_portRegister(ultrasoon->trigger.port, BASIC_PORT);
-    uint32_t timeout;
+    uint32_t time;
+    uint32_t timeout = ultrasoon->max_distance * 2.2 / SPEED_OF_SOUND;
 
     *trigger &= ~_BV(ultrasoon->trigger.pin);
     _delay_us(2);
@@ -35,28 +36,24 @@ void ultrasoon_setDistance(ultrasoon_t* ultrasoon)
     *trigger ^= _BV(ultrasoon->trigger.pin);
 
     ultrasoon->start_time = micros();
-    timeout = ultrasoon->start_time + ULTRASOON_TIMEOUT;
+    time = ultrasoon->start_time + timeout;
     while (!(*echo & _BV(ultrasoon->echo.pin))) {
-        if (timeout < micros()) {
-            DEBUG_DELAY(500)
-            ultrasoon->distance = MAX_DISTANCE;
+        if (time < micros()) {
+            ultrasoon->distance = ultrasoon->max_distance;
             return;
         }
     }
 
     ultrasoon->start_time = micros();
-    DEBUG_SIGNAL
-    timeout = ultrasoon->start_time + ULTRASOON_TIMEOUT;
+    time = ultrasoon->start_time + timeout;
     while ((*echo & _BV(ultrasoon->echo.pin))) {
-        if (timeout < micros()) {
-            DEBUG_DELAY(500)
-            ultrasoon->distance = MAX_DISTANCE;
+        if (time < micros()) {
+            ultrasoon->distance = ultrasoon->max_distance;
             return;
         }
     }
 
     ultrasoon->end_time = micros();
-    DEBUG_SIGNAL
 
     ultrasoon->distance = (ultrasoon->end_time - ultrasoon->start_time) * SPEED_OF_SOUND / 2;
 }
