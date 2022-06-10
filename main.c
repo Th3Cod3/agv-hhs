@@ -40,29 +40,34 @@ int main(void)
         output = PID_computed_custom(&rideStraightPID, rightUltrasoon.distance);
 
         if (basic_readInput(automaticButton)) {
-            basic_outputMode(signalLeds, LOW);
-            dcmotor_pwm_instruction(leftMotor, 0);
-            dcmotor_pwm_instruction(rightMotor, 0);
-        }else if (frontUltrasoon.distance > 20) {
-            speed = 40;
-            basic_outputMode(signalLeds, LOW);
-            dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
-            dcmotor_pwm_instruction(rightMotor, speed);
-        } else if (frontUltrasoon.distance > 10) {
-            basic_outputMode(signalLeds, LOW);
-            dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
-            dcmotor_pwm_instruction(rightMotor, speed);
-        } else {
-            if (lastMillis + 100 < millis()) {
-                ledState = !ledState;
-                lastMillis = millis();
-            }
-            if (ledState) {
+            if (basic_readInput(detectLeft) || basic_readInput(detectRight)) { // ToDo: time out
                 basic_outputMode(signalLeds, HIGH);
-            } else {
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, 0);
+                // ToDo: wait 5 seconds
+            } else if (frontUltrasoon.distance > 20) {
+                speed = 40;
                 basic_outputMode(signalLeds, LOW);
+                dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
+                dcmotor_pwm_instruction(rightMotor, speed);
+            } else if (frontUltrasoon.distance > 10) {
+                basic_outputMode(signalLeds, LOW);
+                dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
+                dcmotor_pwm_instruction(rightMotor, speed);
+            } else {
+                if (lastMillis + 100 < millis()) {
+                    ledState = !ledState;
+                    lastMillis = millis();
+                }
+                if (ledState) {
+                    basic_outputMode(signalLeds, HIGH);
+                } else {
+                    basic_outputMode(signalLeds, LOW);
+                }
+                dcmotor_pwm_instruction(leftMotor, 0);
+                dcmotor_pwm_instruction(rightMotor, 0);
             }
-            basic_outputMode(signalLeds, HIGH);
+        } else {
             dcmotor_pwm_instruction(leftMotor, 0);
             dcmotor_pwm_instruction(rightMotor, 0);
         }
