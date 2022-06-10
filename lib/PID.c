@@ -24,3 +24,23 @@ double PID_computed(PID_t* pid, double distance)
 
     return output; // have function return the PID output
 }
+
+double PID_computed_custom(PID_t* pid, double distance)
+{
+    pid->currentTime = millis();
+    pid->elapsedTime = (double)(pid->currentTime - pid->previousTime);
+
+    pid->error = pid->setPoint - distance;
+    pid->rateError = (pid->error - pid->lastError) / pid->elapsedTime;
+
+    if (pid->error > pid->maxError && pid->rateError > pid->maxRateError) {
+        // return 0;
+    }
+
+    double output = pid->kp * pid->error + pid->kd * pid->rateError;
+
+    pid->lastError = pid->error;
+    pid->previousTime = pid->currentTime;
+
+    return output;
+}

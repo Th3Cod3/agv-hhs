@@ -32,7 +32,7 @@ int main(void)
         ultrasoon_setDistance(&leftUltrasoon);
         ultrasoon_setDistance(&rightUltrasoon);
 
-        output = PID_computed(&rideStraightPID, rightUltrasoon.distance);
+        output = PID_computed_custom(&rideStraightPID, rightUltrasoon.distance);
 
         if (basic_readInput(automaticButton)) {
             basic_outputMode(signalLeds, LOW);
