@@ -5,50 +5,54 @@
 #include "ultrasoon.h"
 #include <avr/io.h>
 
-dc_motor_t rightMotor = {
-    .pinA = {
+pwm_dc_motor_t leftMotor = {
+    .motor = {
+        .pinB = {
+            .port = BASIC_E,
+            .pin = PE5, // D3
+            .type = TYPE_LOGIC_LOW,
+        },
+        .pinA = {
+            .port = BASIC_G,
+            .pin = PG5, // D4
+            .type = TYPE_LOGIC_LOW,
+        },
+        .limit = DEFAULT_INPUT,
+    },
+    .enable = {
         .port = BASIC_E,
-        .pin = PE5, // D3
-        .type = TYPE_LOGIC_HIGH,
+        .pin = PE4, // D2
+        .type = TYPE_LOGIC_LOW,
     },
-    .pinB = {
-        .port = BASIC_G,
-        .pin = PG5, // D4
-        .type = TYPE_LOGIC_HIGH,
-    },
-    .limit = DEFAULT_INPUT,
+    .OCR = &OCR4B,
 };
 
-dc_motor_t leftMotor = {
-    .pinA = {
+pwm_dc_motor_t rightMotor = {
+    .motor = {
+        .pinB = {
+            .port = BASIC_H,
+            .pin = PH3, // D6
+            .type = TYPE_LOGIC_LOW,
+        },
+        .pinA = {
+            .port = BASIC_E,
+            .pin = PE3, // D5
+            .type = TYPE_LOGIC_LOW,
+        },
+        .limit = DEFAULT_INPUT,
+    },
+    .enable = {
         .port = BASIC_H,
-        .pin = PH3, // D6
-        .type = TYPE_LOGIC_HIGH,
+        .pin = PH4, // D7
+        .type = TYPE_LOGIC_LOW,
     },
-    .pinB = {
-        .port = BASIC_E,
-        .pin = PE3, // D5
-        .type = TYPE_LOGIC_HIGH,
-    },
-    .limit = DEFAULT_INPUT,
+    .OCR = &OCR3B,
 };
 
 output_t signalLeds = {
     .port = BASIC_C,
     .pin = PC1, // D36
     .type = LED_TYPE_GROUND,
-};
-
-output_t enableA = {
-    .port = BASIC_E,
-    .pin = PE4, // D2
-    .type = TYPE_LOGIC_HIGH,
-};
-
-output_t enableB = {
-    .port = BASIC_H,
-    .pin = PH4, // D7
-    .type = TYPE_LOGIC_HIGH,
 };
 
 input_t automaticButton = {
@@ -126,15 +130,39 @@ ultrasoon_t frontUltrasoon = {
     }
 };
 
+void initFastPWM() {
+    // OC4B = D7
+    // OC3B = D2
+
+    // Wave mode fast PWM 8bit (non-inverting)
+    TCCR3A |= _BV(WGM30) | _BV(COM3B1);
+    TCCR3B |= _BV(WGM32);
+
+    // pre-scaler 1
+    TCCR3B |= _BV(CS32) | _BV(CS30);
+
+    OCR3B = 10;
+    TCNT3 = 0;
+
+    // Wave mode fast PWM 8bit (non-inverting)
+    TCCR4A |= _BV(WGM40) | _BV(COM4B1);
+    TCCR4B |= _BV(WGM42);
+
+    // pre-scaler 1
+    TCCR4B |= _BV(CS42) | _BV(CS40);
+
+    OCR4B = 10;
+    TCNT4 = 0;
+}
+
 void initGlobal()
 {
     INIT_DEBUG_SIGNAL
     initMillis();
+    initFastPWM();
 
     // init output
     basic_initOutput(signalLeds);
-    basic_initOutput(enableA);
-    basic_initOutput(enableB);
 
     // init input
     basic_initInput(automaticButton);
@@ -150,6 +178,6 @@ void initGlobal()
     ultrasoon_init(frontUltrasoon);
 
     // init dc motor
-    dcmotor_init(rightMotor);
-    dcmotor_init(leftMotor);
+    dcmotor_pwm_init(rightMotor);
+    dcmotor_pwm_init(leftMotor);
 }
