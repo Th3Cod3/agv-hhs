@@ -7,6 +7,8 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
+#define MIN_SPEED 10
+
 extern pwm_dc_motor_t rightMotor;
 extern pwm_dc_motor_t leftMotor;
 extern output_t signalLeds;
@@ -41,15 +43,14 @@ int main(void)
             basic_outputMode(signalLeds, LOW);
             dcmotor_pwm_instruction(leftMotor, 0);
             dcmotor_pwm_instruction(rightMotor, 0);
-        } else if (frontUltrasoon.distance > 20) {
+        }else if (frontUltrasoon.distance > 20) {
             speed = 40;
             basic_outputMode(signalLeds, LOW);
-            dcmotor_pwm_instruction(leftMotor, speed - output);
+            dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
             dcmotor_pwm_instruction(rightMotor, speed);
         } else if (frontUltrasoon.distance > 10) {
-            speed = 20;
             basic_outputMode(signalLeds, LOW);
-            dcmotor_pwm_instruction(leftMotor, speed - output);
+            dcmotor_pwm_instruction(leftMotor, output < speed - MIN_SPEED ? speed - output : MIN_SPEED);
             dcmotor_pwm_instruction(rightMotor, speed);
         } else {
             if (lastMillis + 100 < millis()) {
